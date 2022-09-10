@@ -26,5 +26,22 @@ class sele():
         elif sett['browser'] == 'Opera':
             self.browser = webdriver.Opera(executable_path=OperaDriverManager().install())
 
-    def get(self, link):
-        self.browser.get(link)
+        self.browser.minimize_window()
+
+    def get(self, routin):
+        self.browser.maximize_window()
+        for i in routin:
+            actions = i.split('|')
+            k = 0
+            while k < len(actions):
+                print(actions[k])
+                if actions[k] == 'go to':
+                    k += 1
+                    print(actions[k])
+                    self.browser.get(actions[k])
+                    continue
+                elif actions[k] == 'click':
+                    k += 1
+                    self.browser.find_element(By.XPATH, actions[k]).click()
+                    continue
+                k+=1
