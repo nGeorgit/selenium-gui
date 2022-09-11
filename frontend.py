@@ -5,26 +5,29 @@ from tkinter import ttk
 import json
 from backend import sele
 
-class routin():
+class routin(): #routin ob
     def __init__(self, name, rout, parent):
-        self.se = sele()
-        self.rout = rout
-        self.name = name
-        fr = ttk.Frame(parent).grid()
-        ttk.Button(fr, text='Run routin', command=self.run).grid()
 
-    def run(self):
-        self.se.get(self.rout)
+        self.rout = rout    #the routin string from link.json
+        self.name = name    #the routin's name
 
-class actionOb():
+        ttk.Button(parent, text='Run ' + self.name, command=self.run).grid() #button to run the routin
+
+    def run(self): #functions that runs the routin
+        self.se = sele() #opening browser with slen
+        self.se.get(self.rout) #sending the routin to backend
+
+class actionOb(): #action ob
     def __init__(self, parent, id):
         self.frame = ttk.Frame(parent).grid()
         self.act_ar = []
 
         self.act_1 = StringVar()
 
-        self.comb_1 = ttk.Combobox(self.frame, textvariable=self.act_1)
-        self.comb_1['values'] = ['go to', 'click']
+        act_1_op = ['go to', 'click', 'wait']
+
+        self.comb_1 = ttk.Combobox(self.frame, textvariable=self.act_1) #the first level entry combox
+        self.comb_1['values'] = act_1_op
         self.comb_1.grid()
         self.add_act(self.creat_act_el(self.act_1, 0))
 
@@ -34,14 +37,14 @@ class actionOb():
         self.entry_2 = ttk.Entry(self.frame_2, textvariable=self.act_2).grid()
         self.add_act(self.creat_act_el(self.act_2, 1))
 
-    def clean(self, frame):
+    def clean(self, frame): #func to clean a frame NotInUseYet!
         for widget in frame.winfo_children():
             widget.destroy()
 
     def creat_act_el(self, act, level):
         return {
-            'str' : act,
-            'level' : level
+            'str' : act, #the actual string of the act
+            'level' : level #and the level of it(first is 'go to', 'click'... and second is the links and selectors...)
         }
 
     def add_act(self, act):
@@ -53,12 +56,12 @@ class actionOb():
     def ret_str(self):
         stri = ''
         for i in self.act_ar:
+            print(i['str'].get())
             stri += i['str'].get() + "|"
         return stri
 
 class app():
     def __init__(self):
-
 
         self.id = 0
         self.actions = []
@@ -78,8 +81,10 @@ class app():
         #home tab
         self.main_tab = ttk.Frame(n)
         self.main_tab['padding'] = 20
-        n.add(self.main_tab, text='Home')
+        n.add(self.main_tab, text='New routin')
 
+        self.rout_name = StringVar()
+        ttk.Entry(self.main_tab, textvariable=self.rout_name).grid()
         ttk.Button(self.main_tab ,text='Add action', command=self.add_action).grid() #button that adds an action frame
         self.act_frame = ttk.Frame(self.main_tab).grid()
 
@@ -134,7 +139,7 @@ class app():
         for i in self.actions:
             rout.append(i.ret_str())
             print(i.ret_str())
-        self.link['routin1'] = rout
+        self.link[self.rout_name.get()] = rout
         self.dump('li')
 
 
