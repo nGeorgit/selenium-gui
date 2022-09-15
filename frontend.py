@@ -7,8 +7,7 @@ import json
 from backend import sele
 
 class fram():
-    def __init__(self) -> None:
-        pass
+
     def clean(self, frame):
         for i in frame.grid_slaves():
             i.destroy()
@@ -52,11 +51,14 @@ class routin(fram): #routin ob
         self.edit_fr = edit_fr
         self.o = []
         self.parent = parent
+        self.rout_fr = ttk.Frame(parent)
+        self.rout_fr.grid()
         self.rout = rout    #the routin string from link.json
         self.name = name    #the routin's name
-        ttk.Label(parent, text=name).grid(column=0, columnspan=2, row=id)
-        ttk.Button(parent, text='Run', command=self.run).grid(column=0, row=id+1) #button to run the routin
-        ttk.Button(parent, text='Edit', command=self.edit).grid(column=1, row=id+1)
+        ttk.Label(self.rout_fr, text=name).grid(column=0, columnspan=3, row=id)
+        ttk.Button(self.rout_fr, text='Run', command=self.run).grid(column=0, row=id+1) #button to run the routin
+        ttk.Button(self.rout_fr, text='Edit', command=self.edit).grid(column=1, row=id+1)
+        ttk.Button(self.rout_fr, text='Delete', command=self.delet).grid(column=2, row=id+1)
 
     def run(self): #functions that runs the routin
         self.se = sele() #opening browser with slen
@@ -72,6 +74,16 @@ class routin(fram): #routin ob
             print(act)
             ed.add_action(act_1=act[0], act_2=act[1])
             id += 1
+
+    def delet(self):
+        with open('link.json') as f:
+            link = json.load(f)
+        link.pop(self.name)
+        with open('link.json', 'w') as f:
+            json.dump(link, f, indent=2)
+        self.clean(self.rout_fr)
+    
+
 
 class actionOb(): #action ob
     def __init__(self, parent, id, act_1='', act_2=''):
@@ -108,8 +120,6 @@ class actionOb(): #action ob
         self.entry_2.destroy()
         self.del_bt.destroy()
 
-        for i in self.parent.grid_slaves():
-            i.id_dec()
 
     def creat_act_el(self, act, level):
         return {
