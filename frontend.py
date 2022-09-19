@@ -34,8 +34,8 @@ class rout_cr():
         with open('link.json', 'w') as f:
             json.dump(self.link, f, indent=2)
 
-    def add_action(self, act_1='', act_2=''):
-        self.actions.append(actionOb(self.parent, self.id, act_1=act_1, act_2=act_2))
+    def add_action(self, act_1='', act_2='', act_3=''):
+        self.actions.append(actionOb(self.parent, self.id, act_1=act_1, act_2=act_2, act_3=act_3))
         self.id = self.id + 1
 
     def submit(self):
@@ -72,7 +72,7 @@ class routin(fram): #routin ob
         for i in self.rout:
             act = i.split('|')
             print(act)
-            ed.add_action(act_1=act[0], act_2=act[1])
+            ed.add_action(act_1=act[0], act_2=act[1], act_3=act[2])
             id += 1
 
     def delet(self):
@@ -86,7 +86,7 @@ class routin(fram): #routin ob
 
 
 class actionOb(): #action ob
-    def __init__(self, parent, id, act_1='', act_2=''):
+    def __init__(self, parent, id, act_1='', act_2='', act_3=''):
         self.act_ar = []
 
         self.parent = parent
@@ -96,9 +96,10 @@ class actionOb(): #action ob
         print(self.id.get())
         self.act_lable = ttk.Label(self.parent, textvariable=self.id)
         self.act_lable.grid()
-        act_1_op = ['go to', 'click', 'wait', 'quit']
+        act_1_op = ['go to', 'click', 'wait', 'quit', 'send keys']
 
         self.act_1 = StringVar()
+
         self.comb_1 = ttk.Combobox(self.parent, textvariable=self.act_1) #the first level entry combox
         self.comb_1.set(act_1)
         self.comb_1['values'] = act_1_op
@@ -111,14 +112,22 @@ class actionOb(): #action ob
         self.entry_2.grid()
         self.add_act(self.creat_act_el(self.act_2, 1))
 
+        self.act_3 = StringVar()
+        self.act_3.set(act_3)
+        self.entry_3 = ttk.Entry(self.parent, textvariable=self.act_3)
+        self.entry_3.grid()
+        self.add_act(self.creat_act_el(self.act_3, 2))
+
         self.del_bt = ttk.Button(self.parent, text='Delete', command=self.clean)
         self.del_bt.grid()
 
-    def clean(self): #func to clean a frame NotInUseYet!
+    def clean(self): #func to clean a frame
+        self.act_ar = []
         self.act_lable.destroy()
         self.comb_1.destroy()
         self.entry_2.destroy()
         self.del_bt.destroy()
+        self.entry_3.destroy()
 
 
     def creat_act_el(self, act, level):

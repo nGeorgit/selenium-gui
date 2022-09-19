@@ -1,3 +1,4 @@
+from time import sleep
 from selenium.common import exceptions
 from selenium import webdriver
 from selenium.webdriver.common.by import By # to locate elements (By.XPATH, By.ID,...)
@@ -39,9 +40,17 @@ class sele():
                     k += 1
                     print(actions[k])
                     self.browser.get(actions[k])
-                    continue
                 elif actions[k] == 'click':
                     k += 1
                     self.browser.find_element(By.XPATH, actions[k]).click()
-                    continue
+                elif actions[k] == 'wait':
+                    k += 1
+                    sleep(int(actions[k]))
+
+                elif actions[k] == 'quit':
+                    self.browser.quit()
+                    k += 1
+                elif actions[k] == 'send keys':
+                    k += 1
+                    self.browser.find_element(By.XPATH, actions[k]).send_keys(actions[k+1])
                 k+=1
